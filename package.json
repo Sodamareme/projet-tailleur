@@ -1,0 +1,12 @@
+{
+  "name": "beyond-fashion",
+  "version": "1.0.0",
+  "description": "An application who gives features to tailors within a social media",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "groupe-06-p6",
+  "license": "ISC"
+}
