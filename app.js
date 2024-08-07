@@ -4,6 +4,8 @@ import dbConnect from './database/connexion-db.js';
 import RoleRouter from './route/roleRoute.js';
 import UserRouter from './route/userRoute.js';
 import PostRouter from './route/postRoute.js';
+import RateRouter from './route/rateRoute.js';
+
 
 dotenv.config();
 
@@ -19,5 +21,6 @@ app.use(express.json());
 app.use(`${uri}/role`, RoleRouter);
 app.use(`${uri}/user`, UserRouter);
 app.use(`${uri}/post`, PostRouter);
+app.use(`${uri}/post`, RateRouter);
 
 app.listen(port, () => console.log(`Your application is started on http://www.beyond-fashion.com:${port}`));
