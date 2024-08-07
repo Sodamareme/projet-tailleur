@@ -9,6 +9,9 @@ const userSchema = new mongoose.Schema({
     address: {type: String, required: true},
     roles: [
         {type: mongoose.Schema.Types.ObjectId, ref: 'Role'}
+    ],
+    favorites: [
+        {type: mongoose.Schema.Types.ObjectId, ref: 'Post'}
     ]
 });
 
