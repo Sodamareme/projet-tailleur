@@ -21,6 +21,6 @@ app.use(express.json());
 app.use(`${uri}/role`, RoleRouter);
 app.use(`${uri}/user`, UserRouter);
 app.use(`${uri}/post`, PostRouter);
-app.use(`${uri}/post`, RateRouter);
+app.use(`${uri}/rate`, RateRouter);
 
 app.listen(port, () => console.log(`Your application is started on http://www.beyond-fashion.com:${port}`));

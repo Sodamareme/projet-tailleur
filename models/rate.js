@@ -30,9 +30,7 @@ const rateSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     }
-},
-
- { timestamps: true });
+});
 
 const Rate = mongoose.model('Rate', rateSchema);
 
