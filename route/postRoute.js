@@ -1,7 +1,7 @@
 import express from 'express';
 import { createPost,getAllPosts,updatePost,deletePost,sharePost,disableShareButton } from '../controller/postController.js';
 import { getToken } from '../middlewares/authMiddleware.js';
-import validatePost from '../middlewares/validatorMiddleware.js';
+import {validatePost} from '../middlewares/validatorMiddleware.js';
 
 const PostRouter = express.Router();
 

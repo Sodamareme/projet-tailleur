@@ -4,6 +4,11 @@ import dbConnect from './database/connexion-db.js';
 import RoleRouter from './route/roleRoute.js';
 import UserRouter from './route/userRoute.js';
 import PostRouter from './route/postRoute.js';
+import FavoriteRouter from './route/favoriteRoute.js';
+import RateRouter from './route/rateRoute.js';
+import CommentRouter from './route/commentRoute.js';
+import LikeRouter from './route/likeRoute.js';
+
 
 dotenv.config();
 
@@ -19,11 +24,9 @@ app.use(express.json());
 app.use(`${uri}/role`, RoleRouter); // pour creer un role
 app.use(`${uri}/user`, UserRouter); // Pourcreer un user
 app.use(`${uri}/post`, PostRouter); // Pour creer un post
-app.use(`${uri}/post`, PostRouter); // pour le getAllPots
-app.use(`${uri}/post`, PostRouter); // pour update un post 
-app.use(`${uri}/post`, PostRouter); // pour delete un post
-app.use(`${uri}/post`, PostRouter); // pour share un post
-app.use(`${uri}/post`, PostRouter); // pour desable-share un post
+app.use(`${uri}/favorite`, FavoriteRouter);
+app.use(`${uri}/rate`, RateRouter);
+app.use(`${uri}/comment`, CommentRouter);
+app.use(`${uri}`, LikeRouter);
 
-
-app.listen(port, () => console.log(`Your application is started on http://www.serigne.sn::${port}`));
+app.listen(port, () => console.log(`Your application is started on http://www.beyond-fashion.com:${port}`));

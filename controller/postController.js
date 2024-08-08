@@ -86,80 +86,82 @@ import Share from "../models/share.js";
         }
     };
 
-    const sharePost = async (req, res) => {
-        try {
-            const postId = req.params.id;
-            const userId = req.userId;
-            const recipientId = req.body.recipientId;
-            
-            if (!recipientId) {
-                return res.status(400).json({ message: 'Recipient user ID is required' });
-            }
-            
-            if (recipientId === userId) {
-                return res.status(400).json({ message: 'Cannot share post to yourself' });
-            }
-    
-            const post = await Post.findById(postId);
-            console.log('post:', post);
-            
-            if (!post) {
-                return res.status(404).json({ message: 'Post not found' });
-            }
-            const user = await Post.findById(userId);
-
-            // console.log('post.author:', post.author);
-            
-            // if (!post.author || post.author.toString() !== userId.toString()) {
-                //     return res.status(403).json({ message: 'User does not have the required permissions to share this post' });
-                // }
-                
-                const recipient = await User.findById(recipientId);
-                
-                if (!recipient) {
-                    return res.status(404).json({ message: 'Recipient user not found' });
-                }
-                
-                const newShare = new Share({
-                    recipientId: recipientId,
-                    user: userId,
-                    posts: [postId]
-                });
-                await newShare.save();
-                console.log('user:', user);
-                
-                res.status(200).json({ message: 'Post shared successfully', status: true });
-                
-            } catch (error) {
-                console.error('Error sharing post:', error);
-                res.status(400).json({ message: 'Failed to share post', error: error.message, status: false });
-            }
-    }
-
-    const disableShareButton = async (req, res) => {
-        try {
-            const postId = req.params.id;
-            const userId = req.userId;
-
-            const post = await Post.findById(postId);
-
-            if (!post) {
-                return res.status(404).json({ message: 'Post not found' });
-            }
-
-            if (post.author.toString()!== userId.toString()) {
-                return res.status(403).json({ message: 'User does not have the required permissions to disable share button' });
-            }
-
-            post.status = false;
-            const updatedPost = await post.save();
-
-            res.status(200).json({ message: 'Share button disabled successfully', post: updatedPost, status: true });
-        } catch (error) {
-            console.error('Error disabling share button:', error);
-            res.status(400).json({ message: 'Failed to disable share button', post: null, status: true });
+const sharePost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.userId;
+        const recipientId = req.body.recipientId;
+        
+        if (!recipientId) {
+            return res.status(400).json({ message: 'Recipient user ID is required' });
         }
+        
+        if (recipientId === userId) {
+            return res.status(400).json({ message: 'Cannot share post to yourself' });
+        }
+
+        const post = await Post.findById(postId);
+        console.log('post:', post);
+        
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+        const user = await Post.findById(userId);
+
+        // console.log('post.author:', post.author);
+        
+        // if (!post.author || post.author.toString() !== userId.toString()) {
+            //     return res.status(403).json({ message: 'User does not have the required permissions to share this post' });
+            // }
+            
+            const recipient = await User.findById(recipientId);
+            
+            if (!recipient) {
+                return res.status(404).json({ message: 'Recipient user not found' });
+            }
+            
+            const newShare = new Share({
+                recipientId: recipientId,
+                user: userId,
+                posts: [postId]
+            });
+            await newShare.save();
+            console.log('user:', user);
+            
+            res.status(200).json({ message: 'Post shared successfully', status: true });
+            
+        } catch (error) {
+            console.error('Error sharing post:', error);
+            res.status(400).json({ message: 'Failed to share post', error: error.message, status: false });
+        }
+}
+
+const disableShareButton = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.userId;
+
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        if (post.author.toString()!== userId.toString()) {
+            return res.status(403).json({ message: 'User does not have the required permissions to disable share button' });
+        }
+
+        post.status = false;
+        const updatedPost = await post.save();
+
+        res.status(200).json({ message: 'Share button disabled successfully', post: updatedPost, status: true });
+    } catch (error) {
+        console.error('Error disabling share button:', error);
+        res.status(400).json({ message: 'Failed to disable share button', post: null, status: true });
     }
+}
     
 
-        export { createPost,getAllPosts,updatePost,deletePost,sharePost,disableShareButton}
+export { createPost,getAllPosts,updatePost,deletePost,sharePost,disableShareButton}
+
+
