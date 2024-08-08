@@ -5,6 +5,7 @@ import RoleRouter from './route/roleRoute.js';
 import UserRouter from './route/userRoute.js';
 import PostRouter from './route/postRoute.js';
 import LikeRouter from './route/likeRoute.js';
+import StatueRouter from './route/statueRoute.js';
 dotenv.config();
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(`${uri}/role`, RoleRouter);
 app.use(`${uri}/user`, UserRouter);
 app.use(`${uri}/post`, PostRouter);
 app.use(`${uri}`, LikeRouter);
+app.use(`${uri}/statue`, StatueRouter);
 
 
 app.listen(port, () => console.log(`Your application is started on http://www.beyond-fashion.com:${port}`));
