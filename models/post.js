@@ -7,9 +7,7 @@ const postSchema = new mongoose.Schema({
     views: { type: Number, default: 0},
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     published_at: { type: Date, default: Date.now },
-    favorites: [
-        {type: mongoose.Schema.Types.ObjectId, ref: 'Post'}
-    ]
+    nbFavorites: { type: Number, default: 0 },
 });
 
 const Post = mongoose.model("Post", postSchema);

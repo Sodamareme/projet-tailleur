@@ -14,11 +14,12 @@ const mongo_uri = process.env.MONGO_URI;
 const uri = process.env.URI;
 dbConnect(mongo_uri);
 
+
 app.use(express.json());
 
 app.use(`${uri}/role`, RoleRouter);
 app.use(`${uri}/user`, UserRouter);
 app.use(`${uri}/post`, PostRouter);
-app.use(`${uri}/favorites`, FavoriteRouter);
+app.use(`${uri}/favorite`, FavoriteRouter);
 
 app.listen(port, () => console.log(`Your application is started on http://www.beyond-fashion.com:${port}`));

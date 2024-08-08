@@ -10,9 +10,7 @@ const userSchema = new mongoose.Schema({
     roles: [
         {type: mongoose.Schema.Types.ObjectId, ref: 'Role'}
     ],
-    favorites: [
-        {type: mongoose.Schema.Types.ObjectId, ref: 'Post'}
-    ]
+    
 });
 
 const User = mongoose.model('User', userSchema);

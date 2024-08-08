@@ -1,9 +1,10 @@
 import User from "../models/user.js";
 import Post from "../models/post.js";
+import Favorite from "../models/favorites.js";
 
 const addToFavorites = async (req, res) => {
     try {
-        const { id: postId } = req.params; // Récupérer postId depuis les paramètres d'URL
+        const { postId } = req.body;
         const userId = req.userId;
 
         const user = await User.findById(userId);
@@ -15,15 +16,15 @@ const addToFavorites = async (req, res) => {
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
         }
-
-        if (!user.favorites.includes(postId)&& !post.favorites.includes(postId)) {
-            user.favorites.push(postId);
-            post.favorites.push(postId);
-            await user.save();
+        const favorites = await Favorite.find();
+        if (!favorites.some(favorite => favorite.user.toString() === userId && favorite.post.toString() === postId)) {
+            const favorite = new Favorite({ user: userId, post: postId });
+            await favorite.save();
+            post.nbFavorites++;
             await post.save();
-            return res.status(200).json({ message: 'Post added to favorites', status: true });
+            return res.status(200).json({ message: 'Post added to favorites successfully', status: true });
         } else {
-            return res.status(400).json({ message: 'Post is already in favorites', status: false });
+            removeFavorite(res, userId, post);
         }
     } catch (error) {
         res.status(400).json({ message: 'Failed to add to favorites', error, status: false });
@@ -31,26 +32,15 @@ const addToFavorites = async (req, res) => {
 };
 
 
-const removeFromFavorites = async (req, res) => {
-    try {
-        const { postId } = req.body;
-        const userId = req.userId;
-
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        if (user.favorites.includes(postId)) {
-            user.favorites = user.favorites.filter(id => id.toString() !== postId);
-            await user.save();
-            return res.status(200).json({ message: 'Post removed from favorites', status: true });
-        } else {
-            return res.status(400).json({ message: 'Post is not in favorites', status: false });
-        }
-    } catch (error) {
-        res.status(400).json({ message: 'Failed to remove from favorites', error, status: false });
+const removeFavorite = async (res, userId, post) => {
+    const favorite = await Favorite.findOneAndDelete({ user: userId, post: post._id });
+    if (favorite) {
+        post.nbFavorites--;
+        await post.save();
+    }  else {
+        throw new Error('Favorite not found');
     }
-};
+    return res.status(200).json({ message: 'Post deleted to favorites successfully', status: true });
+}
 
-export { addToFavorites, removeFromFavorites };
+export { addToFavorites };
