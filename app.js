@@ -8,7 +8,7 @@ import FavoriteRouter from './route/favoriteRoute.js';
 import RateRouter from './route/rateRoute.js';
 import CommentRouter from './route/commentRoute.js';
 import LikeRouter from './route/likeRoute.js';
-
+import StatueRouter from './route/statueRoute.js';
 
 dotenv.config();
 
@@ -28,5 +28,6 @@ app.use(`${uri}/favorite`, FavoriteRouter);
 app.use(`${uri}/rate`, RateRouter);
 app.use(`${uri}/comment`, CommentRouter);
 app.use(`${uri}`, LikeRouter);
+app.use(`${uri}/statue`, StatueRouter);
 
 app.listen(port, () => console.log(`Your application is started on http://www.beyond-fashion.com:${port}`));
