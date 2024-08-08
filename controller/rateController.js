@@ -3,6 +3,7 @@ import Post from '../models/post.js';
 import User from '../models/user.js';
 
 
+
 export const createRate = async (req, res) => {
     try {
         const { stars, description, postId } = req.body;

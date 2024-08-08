@@ -20,6 +20,25 @@ const validatePost = [
   }
 ];
 
+const validateRate = [
+  body('stars')
+    .isFloat({ min: 0, max: 5, gt: -1 }).withMessage('Les étoiles doivent être entre 0 et 5 et peuvent inclure des demi-étoiles'),
+  body('description')
+    .optional()
+    .trim()
+    .isLength({ max: 500 }).withMessage('La description ne doit pas dépasser 500 caractères'),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array()[0].msg });
+    }
+    next();
+  }
+];
+
+
+
 
 
 
@@ -66,4 +85,4 @@ const validatePost = [
 //     }
 //   ];
 
-export default validatePost ;
+export { validatePost, validateRate };
