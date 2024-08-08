@@ -126,5 +126,5 @@ const validateRate = [
 //     }
 //   ];
 
-export { validatePost, validateRate };
+export { validatePost, validateRate, validateComment };
 
