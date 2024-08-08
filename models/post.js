@@ -4,7 +4,7 @@ const postSchema = new mongoose.Schema({
     content: { type: String, required: true },
     description: { type: String, maxLength: 800 },
     status: { type: Boolean, default: true },
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
     views: { type: Number, default: 0 },
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Like' }],
