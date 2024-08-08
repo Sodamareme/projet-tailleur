@@ -8,7 +8,7 @@ const validatePost = [
     .isLength({ max: 100 }).withMessage('Le titre ne doit pas dépasser 100 caractères'),
   body('description')
     .trim()
-    .isLength({ min: 1 }).withMessage('Le contenu est requis')
+    .isLength({ min: 1 }).withMessage('La description est requise')
     .isLength({ max: 500 }).withMessage('Le contenu ne doit pas dépasser 500 caractères'),
 
   (req, res, next) => {

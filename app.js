@@ -16,8 +16,14 @@ dbConnect(mongo_uri);
 
 app.use(express.json());
 
-app.use(`${uri}/role`, RoleRouter);
-app.use(`${uri}/user`, UserRouter);
-app.use(`${uri}/post`, PostRouter);
+app.use(`${uri}/role`, RoleRouter); // pour creer un role
+app.use(`${uri}/user`, UserRouter); // Pourcreer un user
+app.use(`${uri}/post`, PostRouter); // Pour creer un post
+app.use(`${uri}/post`, PostRouter); // pour le getAllPots
+app.use(`${uri}/post`, PostRouter); // pour update un post 
+app.use(`${uri}/post`, PostRouter); // pour delete un post
+app.use(`${uri}/post`, PostRouter); // pour share un post
+app.use(`${uri}/post`, PostRouter); // pour desable-share un post
 
-app.listen(port, () => console.log(`Your application is started on http://www.beyond-fashion.com:${port}`));
+
+app.listen(port, () => console.log(`Your application is started on http://www.serigne.sn::${port}`));
