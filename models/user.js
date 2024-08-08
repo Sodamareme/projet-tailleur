@@ -7,10 +7,9 @@ const userSchema = new mongoose.Schema({
     firstname: {type: String, required: true},
     phoneNumber: {type: String, required: true, unique: true},
     address: {type: String, required: true},
-    roles: [
-        {type: mongoose.Schema.Types.ObjectId, ref: 'Role'}
-    ],
-    
+    roles: [{type: mongoose.Schema.Types.ObjectId, ref: 'Role'}],
+    followings: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}], //les personnes que tu as suivi // abonnement
+    followers: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}], //les personnes que t'ont suivi // abonné
 });
 
 const User = mongoose.model('User', userSchema);

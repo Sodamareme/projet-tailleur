@@ -5,6 +5,10 @@ import RoleRouter from './route/roleRoute.js';
 import UserRouter from './route/userRoute.js';
 import PostRouter from './route/postRoute.js';
 import FavoriteRouter from './route/favoriteRoute.js';
+import RateRouter from './route/rateRoute.js';
+import CommentRouter from './route/commentRoute.js';
+import LikeRouter from './route/likeRoute.js';
+
 
 dotenv.config();
 
@@ -21,5 +25,8 @@ app.use(`${uri}/role`, RoleRouter);
 app.use(`${uri}/user`, UserRouter);
 app.use(`${uri}/post`, PostRouter);
 app.use(`${uri}/favorite`, FavoriteRouter);
+app.use(`${uri}/rate`, RateRouter);
+app.use(`${uri}/comment`, CommentRouter);
+app.use(`${uri}`, LikeRouter);
 
 app.listen(port, () => console.log(`Your application is started on http://www.beyond-fashion.com:${port}`));
