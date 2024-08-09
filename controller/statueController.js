@@ -68,6 +68,6 @@ const deleteExpiredStatues = async () => {
 };
 
 // Exécution de la suppression des statues expirés toutes les heures
-setInterval(deleteExpiredStatues, 60 * 60 * 1000);  // 60 minutes * 60 secondes * 1000 millisecondes
+setInterval(deleteExpiredStatues, 2 * 60 * 1000);  // 60 minutes * 60 secondes * 1000 millisecondes
 
 export { createStatue, deleteStatue, deleteAllStatues };
