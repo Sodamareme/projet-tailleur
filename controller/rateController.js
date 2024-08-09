@@ -34,7 +34,7 @@ export const createRate = async (req, res) => {
         
         await post.save();
 
-        res.status(201).json(rate);
+        res.status(201).json({ message: "Post rated successfully" });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
