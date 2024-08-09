@@ -5,7 +5,7 @@ import Post from '../models/post.js';
 const removeExistingReaction = async (Model, post, user) => {
     const existingReaction = await Model.findOne({ post, user });
     if (existingReaction) {
-        console.log('Removing existing reaction:', existingReaction);
+        console.log('Removing existing reaction:');
         await existingReaction.deleteOne();
         return existingReaction._id; // Return the ID of the removed reaction
     }
@@ -16,10 +16,10 @@ const updatePostLikes = async (postId, likeId, action) => {
     try {
         if (action === 'add') {
             const postUpdate = await Post.findByIdAndUpdate(postId, { $addToSet: { likes: likeId } }, { new: true });
-            console.log('Post updated after like:', postUpdate);
+            console.log('Post updated after like:');
         } else if (action === 'remove') {
             const postUpdate = await Post.findByIdAndUpdate(postId, { $pull: { likes: likeId } }, { new: true });
-            console.log('Post updated after like removal:', postUpdate);
+            console.log('Post updated after like removal:');
         }
     } catch (error) {
         console.error(`Error updating post after like ${action}:`, error);
@@ -33,7 +33,7 @@ const updatePostDislikes = async (postId, dislikeId, action) => {
             console.log('Post updated after dislike:', postUpdate);
         } else if (action === 'remove') {
             const postUpdate = await Post.findByIdAndUpdate(postId, { $pull: { dislikes: dislikeId } }, { new: true });
-            console.log('Post updated after dislike removal:', postUpdate);
+            console.log('Post updated after dislike removal:');
         }
     } catch (error) {
         console.error(`Error updating post after dislike ${action}:`, error);
@@ -55,7 +55,7 @@ const likePost = async (req, res) => {
         // Remove existing dislike if it exists
         const existingDislikeId = await removeExistingReaction(Dislike, postId, userId);
         if (existingDislikeId) {
-            await updatePostDislikes(postId, existingDislikeId, 'remove');
+            await updatePostDislikes(postId, existingDislikeId, 'remove'); 
         }
 
         // Add new like
