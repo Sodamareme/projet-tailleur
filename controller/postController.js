@@ -67,36 +67,39 @@ const updatePost = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-    try {
-        const postId = req.params.id;
-        const userId = req.userId;
+    const postId = req.params.id;
+    const userId = req.userId;
+    genericDeletePost(res, postId, userId);
+    
+};
 
+async function genericDeletePost(res, postId, userId){
+    try{
         const post = await Post.findById(postId);
 
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
         }
 
-            
         if (post.author.toString() !== userId.toString()) {
-                return res.status(403).json({ message: 'User does not have the required permissions to delete this post' });
+            return res.status(403).json({ message: 'User does not have the required permissions to delete this post' });
         }
-            
-            await Favorite.deleteMany({ post: postId });
-            await Comment.deleteMany({ post: postId });
-            await Like.deleteMany({ post: postId });
-            await Dislike.deleteMany({ post: postId });
-            await Rate.deleteMany({ post: postId });
-            
-            await post.deleteOne();
-            
 
-            res.status(200).json({ message: 'Post and associated references deleted successfully', status: true });
-        } catch (error) {
-            console.error('Error deleting post:', error);
-            res.status(400).json({ message: 'Failed to delete post and associated references', error: error.message, status: false });
-        }
-    };
+        await Favorite.deleteMany({ post: postId });
+        await Comment.deleteMany({ post: postId });
+        await Like.deleteMany({ post: postId });
+        await Dislike.deleteMany({ post: postId });
+        await Rate.deleteMany({ post: postId });
+        
+        await post.deleteOne();
+
+        res.status(200).json({ message: 'Post and associated references deleted successfully', status: true });
+    }catch (error) {
+        console.error('Error deleting post:', error);
+        res.status(400).json({ message: 'Failed to delete post and associated references', error: error.message, status: false });
+    }
+    
+}
 
 const sharePost = async (req, res) => {
     try {
@@ -193,8 +196,7 @@ const reportPost = async (req, res) => {
 
         // Delete the post if the number of reports reaches 3
         if (post.reports.length >= 3) {
-            
-            
+            genericDeletePost(res, post._id.toString(), post.author.toString());
         }
 
         await post.save();
