@@ -1,6 +1,12 @@
 import User from "../models/user.js";
 import Post from "../models/post.js";
 import Share from "../models/share.js";
+import Favorite from "../models/favorites.js";
+import Like from "../models/like.js";
+import Dislike from "../models/dislike.js";
+import Rate from "../models/rate.js";
+import Comment from "../models/comment.js";
+
 
     const createPost = async (req, res) => {
 
@@ -76,13 +82,19 @@ import Share from "../models/share.js";
                 return res.status(403).json({ message: 'User does not have the required permissions to delete this post' });
             }
             
+            await Favorite.deleteMany({ post: postId });
+            await Comment.deleteMany({ post: postId });
+            await Like.deleteMany({ post: postId });
+            await Dislike.deleteMany({ post: postId });
+            await Rate.deleteMany({ post: postId });
+            
             await post.deleteOne();
             
 
-            res.status(200).json({ message: 'Post deleted successfully', status: true });
+            res.status(200).json({ message: 'Post and associated references deleted successfully', status: true });
         } catch (error) {
             console.error('Error deleting post:', error);
-            res.status(400).json({ message: 'Failed to delete post', error: error.message, status: false });
+            res.status(400).json({ message: 'Failed to delete post and associated references', error: error.message, status: false });
         }
     };
 

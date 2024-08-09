@@ -1,16 +1,4 @@
 
-// const createComment = (req, res) =>{
-//     // const userId = req.userId;
-//     // const {postId, content} = req.body;
-
-//     // console.log(content);
-//     // console.log(userId);
-//     // console.log(postId);
-
-//     res.end();
-// }
-
-// export {createComment};
 import Comment from '../models/comment.js';
 import Post from '../models/post.js';
 
