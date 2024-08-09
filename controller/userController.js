@@ -89,7 +89,7 @@ const follow = async (req, res) => {
         connectedUser.save();
         followingUser.save();
 
-        res.status(200).json({ message: 'Following user successfully', status: true });
+        res.status(200).json({ message: 'user followed successfully', status: true });
     } catch (error) {
         res.status(400).json({ message: 'Error while following user', error, status: false });
     }
@@ -113,7 +113,7 @@ const unfollow = async (req, res) => {
 
         await User.findByIdAndUpdate(unfollowingUserId, { $pull: { followers: connectedUserId } }, { new: true });
 
-        res.status(200).json({ message: 'Unfollowing user successfully', status: true });
+        res.status(200).json({ message: 'User unfollowed successfully', status: true });
     } catch (error) {
         res.status(400).json({ message: 'Error while unfollowing user', error, status: false });
     }
