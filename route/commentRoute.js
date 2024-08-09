@@ -7,7 +7,7 @@ const CommentRouter = express.Router();
 
 CommentRouter.post('/create-comment', getToken, validateComment, createComment);
 CommentRouter.delete('/delete-comment/:commentId', getToken, deleteComment);
-CommentRouter.put('/update-comment/:commentId', getToken, validateComment, updateComment); 
+CommentRouter.put('/update-comment/:commentId', getToken, updateComment); 
 
 export default CommentRouter;
 
