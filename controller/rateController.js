@@ -1,6 +1,7 @@
 import Rate from '../models/rate.js';
 import Post from '../models/post.js';
 import User from '../models/user.js';
+import { createNotification } from './notificationController.js';
 
 export const createRate = async (req, res) => {
     try {
@@ -21,6 +22,16 @@ export const createRate = async (req, res) => {
             return res.status(400).json({ message: "You have already rated this post" });
         }
 
+        const postAuteur = Post.findById(postId).populate('author');
+        const connectedUser = await User.findById(userId);
+
+        if (!postId || !postAuteur || !connectedUser) {
+            return res.status(400).json({ message: 'Failed to retrieve post or user information' });
+        }
+
+        const message = `${connectedUser.firstname} ${connectedUser.lastname} vient de noter votre post`;
+        createNotification(message, postAuteur._id);
+
         const rate = new Rate({
             stars,
             description,
@@ -33,6 +44,19 @@ export const createRate = async (req, res) => {
         post.rates.push(savedRate._id);  
         
         await post.save();
+
+        /* if (post.author._id.toString() !== userId.toString()) {
+            const message = `User ${userId} rated your post with ${stars} stars.`;
+            const notification = new Notification({
+                user: post.author._id,
+                post: postId,
+                type: 'rate',
+                sender: userId,
+                message,
+            });
+            await notification.save();
+        }
+ */
 
         res.status(201).json({ message: "Post rated successfully" });
     } catch (error) {

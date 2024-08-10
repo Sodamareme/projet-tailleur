@@ -11,10 +11,12 @@ import RateRouter from './route/rateRoute.js';
 import CommentRouter from './route/commentRoute.js';
 import LikeRouter from './route/likeRoute.js';
 import StatueRouter from './route/statueRoute.js';
+/* import NotificationRouter from './route/notificationRoute.js' */
 import viewRouter from './route/viewRoute.js';
 import blockRouter from './route/blockRoute.js';
 import MessageRouter from './route/messageRouter.js';
 import MesureRouter from './route/mesureRoute.js';
+
 
 
 dotenv.config();
@@ -35,6 +37,7 @@ app.use(`${uri}/rate`, RateRouter);
 app.use(`${uri}/comment`, CommentRouter);
 app.use(`${uri}`, LikeRouter);
 app.use(`${uri}/statue`, StatueRouter);
+/* app.use(`${uri}`, NotificationRouter); */
 app.use(`${uri}/view`, viewRouter);
 app.use(`${uri}/block`, blockRouter);
 app.use(`${uri}/message`, MessageRouter);
@@ -60,3 +63,4 @@ server.listen(port, () => { console.log(`Your application is started on http://w
 
 
 //app.listen(port, () => console.log(`Your application is started on http://www.beyond-fashion.com:${port}`));
+

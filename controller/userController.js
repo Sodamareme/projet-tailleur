@@ -2,6 +2,8 @@ import User from "../models/user.js";
 import Role from "../models/role.js";
 import { hashPassword, generateToken } from "../utils/utils.js";
 import bcrypt from 'bcryptjs';
+import { createNotification } from './notificationController.js';
+
 
 const createUser = async (req, res) => {
     try {
@@ -83,8 +85,17 @@ const follow = async (req, res) => {
             return res.status(404).json({ message: 'Following user not found', status: false });
         }
 
+
         connectedUser.followings.push(followingUserId); // ajout de la liste de ses abonnements
         followingUser.followers.push(connectedUserId);
+        
+
+        if (!followingUser || !connectedUser) {
+            return res.status(400).json({ message: 'Failed to retrieve post or user information' });
+        }
+
+        const message = `${connectedUser.firstname} ${connectedUser.lastname} vous suit`;
+        createNotification(message, followingUser._id);
 
         connectedUser.save();
         followingUser.save();
