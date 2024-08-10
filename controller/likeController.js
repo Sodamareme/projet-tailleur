@@ -38,41 +38,6 @@ const updatePostDislikes = async (postId, dislikeId, action) => {
     }
 };
 
-/* const createNotification = async (postId, userId,Model) => {
-    try {
-      
-          console.log(userId);
-
-         postId = await Post.findById(postId).populate('author'); // Assuming 'author' field references the post's author
-          // The user who should receive the notification
-          console.log(postId);
-          let message;
-
-        switch (Model) {
-            case 'Like':
-                message = `${userId} liked your post.`;
-                break;
-            case 'Dislike':
-                message = `${userId} disliked your post.`;
-                break;
-            default:
-                message = `${userId} interacted with your post.`;
-        }
-
-        const notification = new Notification({
-            postId:postId,
-            userId:userId,
-            type:Model,
-            message,
-        });
-
-        await notification.save();
-        await User.findByIdAndUpdate(userId, { $push: { notifications: notification._id } });
-
-    } catch (error) {
-        console.error(`Error creating ${Model} notification:`, error);
-    }
-}; */
 const likePost = async (req, res) => {
     try {
         const postId = req.params.postId;
