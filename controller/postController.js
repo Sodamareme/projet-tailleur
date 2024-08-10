@@ -24,6 +24,13 @@ const createPost = async (req, res) => {
             return res.status(403).json({ message: 'User does not have the required role' });
         }
 
+        if(user.credit == 0){
+            return res.status(403).json({ message: 'User does not have enough credit to create a post', status: false });
+        }else {
+            user.credit -= 1;
+            await user.save();
+        }
+
         const newPost = new Post({ content, description, author: userId });
         const savedPost = await newPost.save();
         res.status(201).json({ message: 'Post saved successfully', post: savedPost, status: true });

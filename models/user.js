@@ -10,9 +10,8 @@ const userSchema = new mongoose.Schema({
     roles: [{type: mongoose.Schema.Types.ObjectId, ref: 'Role'}],
     followings: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}], //les personnes que tu as suivi // abonnement
     followers: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
-    status: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Statue' }]
-
-    //les personnes que t'ont suivi // abonné
+    status: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Statue' }],
+    credit: { type: Number, default: 0 }
 });
 
 const User = mongoose.model('User', userSchema);
