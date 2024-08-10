@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
     roles: [{type: mongoose.Schema.Types.ObjectId, ref: 'Role'}],
     followings: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}], //les personnes que tu as suivi // abonnement
     followers: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
-    status: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Statue' }]
+    status: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Statue' }],
+    notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }] 
 
     //les personnes que t'ont suivi // abonné
 });
