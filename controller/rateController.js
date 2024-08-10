@@ -23,8 +23,6 @@ export const createRate = async (req, res) => {
         }
 
         const postAuthor = await User.findOne({_id: post.author});
-        console.log(postAuthor._id.toString());
-        console.log(userId);
 
         if(postAuthor._id.toString() === userId){
             return res.status(400).json({ message: "You cannot rate your own post" });
