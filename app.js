@@ -15,13 +15,9 @@ import StatueRouter from './route/statueRoute.js';
 import viewRouter from './route/viewRoute.js';
 import blockRouter from './route/blockRoute.js';
 import MessageRouter from './route/messageRouter.js';
-<<<<<<< HEAD
+
 import RechargeRouter from './route/rechargeRoute.js';
-=======
 import MesureRouter from './route/mesureRoute.js';
-
-
->>>>>>> refs/remotes/origin/master
 
 dotenv.config();
 
@@ -45,11 +41,8 @@ app.use(`${uri}/statue`, StatueRouter);
 app.use(`${uri}/view`, viewRouter);
 app.use(`${uri}/block`, blockRouter);
 app.use(`${uri}/message`, MessageRouter);
-<<<<<<< HEAD
 app.use(`${uri}/recharge`, RechargeRouter);
-=======
 app.use(`${uri}/mesure`, MesureRouter);
->>>>>>> refs/remotes/origin/master
 
 // Create an HTTP server and bind it with Socket.IO
 const server = http.createServer(app);
