@@ -6,6 +6,7 @@ import Like from "../models/like.js";
 import Dislike from "../models/dislike.js";
 import Rate from "../models/rate.js";
 import Comment from "../models/comment.js";
+import { createNotification } from './notificationController.js';
 
 
 const createPost = async (req, res) => {
@@ -90,13 +91,23 @@ async function genericDeletePost(res, postId, userId){
         await Like.deleteMany({ post: postId });
         await Dislike.deleteMany({ post: postId });
         await Rate.deleteMany({ post: postId });
-        
+
+        const postAuteur = Post.findById(postId).populate('author');
+        const connectedUser = await User.findById(userId);
+
+        if (!postId || !postAuteur || !connectedUser) {
+            return res.status(400).json({ message: 'Failed to retrieve post or user information' });
+        }
+        const message = `Votre post:${postId} a ete supprimé aprés 3 signalements`;
+        createNotification(message, postAuteur._id);
         await post.deleteOne();
 
-        res.status(200).json({ message: 'Post and associated references deleted successfully', status: true });
+        return res.status(200).json({ message: 'Post and associated references deleted successfully', status: true });
     }catch (error) {
         console.error('Error deleting post:', error);
-        res.status(400).json({ message: 'Failed to delete post and associated references', error: error.message, status: false });
+        if (!res.headersSent) {
+            res.status(500).json({ message: 'Erreur lors de la suppression du post.' });
+        }
     }
     
 }
@@ -168,7 +179,7 @@ const disableShareButton = async (req, res) => {
 
 const reportPost = async (req, res) => {
     try {
-        const postId = req.params.id;
+        const postId = req.params.postId;
         const userId = req.userId;
         const { reason } = req.body;
 
@@ -182,27 +193,37 @@ const reportPost = async (req, res) => {
         if (post.author.toString() === userId.toString()) {
             return res.status(403).json({ message: 'You cannot report your own post' });
         }
-        
+        /* 
         const alreadyReported = post.reports.some(report => report.userId.toString() === userId.toString());
     
         if (alreadyReported) {
             return res.status(403).json({ message: 'You have already reported this post' });
+        }*/
+
+        const postAuteur = Post.findById(postId).populate('author');
+        const connectedUser = await User.findById(userId);
+
+        if (!postId || !postAuteur || !connectedUser) {
+            return res.status(400).json({ message: 'Failed to retrieve post or user information' });
         }
 
-        // Add 
-
+        const message = `${connectedUser.firstname} ${connectedUser.lastname} vient de signaler votre post`;
+        createNotification(message, postAuteur._id);
         // Add the report to the reports array
         post.reports.push({ userId, reason });
 
         // Delete the post if the number of reports reaches 3
-        if (post.reports.length >= 3) {
-            genericDeletePost(res, post._id.toString(), post.author.toString());
+
+        if (post.reports.length >= 2) {
+
+            return genericDeletePost(res, post._id.toString(), post.author.toString());
+            
         }
 
         await post.save();
-        res.status(200).json({ message: 'Post reported successfully', post, status: true });
+        return res.status(200).json({ message: 'Post reported successfully', post, status: true });
     } catch (error) {
-        res.status(400).json({ message: 'Failed to report post', error: error.message, status: false });
+        return res.status(400).json({ message: 'Failed to report post', error: error.message, status: false });
     }
 };
 

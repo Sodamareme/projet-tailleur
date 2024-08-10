@@ -1,6 +1,6 @@
-import notification from '../models/notification.js';
+import Notification from '../models/notification.js';
 
-export const getUserNotifications = async (req, res) => {
+const getUserNotifications = async (req, res) => {
     try {
         const userId = req.userId;
 
@@ -11,3 +11,14 @@ export const getUserNotifications = async (req, res) => {
         res.status(500).json({ message: 'Error fetching notifications' });
     }
 };
+
+const createNotification = async (message, receiverId) =>{
+    try{
+        const notification = new Notification({message, receiverId});
+        await notification.save(); 
+    }catch (error ){
+        console.log(error);
+    }      
+}
+
+export {createNotification}

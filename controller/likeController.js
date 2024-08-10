@@ -1,7 +1,8 @@
 import Like from '../models/like.js';
 import Dislike from '../models/dislike.js';
 import Post from '../models/post.js';
-import Notification from '../models/notification.js'; // Import the Notification model
+import { createNotification } from './notificationController.js';
+
 import User from '../models/user.js';
 const removeExistingReaction = async (Model, post, user) => {
     const existingReaction = await Model.findOne({ post, user });
@@ -37,12 +38,15 @@ const updatePostDislikes = async (postId, dislikeId, action) => {
     }
 };
 
-const createNotification = async (postId, userId,Model) => {
+/* const createNotification = async (postId, userId,Model) => {
     try {
-         userId= await Model.findOne({post,user})
+      
+          console.log(userId);
+
          postId = await Post.findById(postId).populate('author'); // Assuming 'author' field references the post's author
           // The user who should receive the notification
-        let message;
+          console.log(postId);
+          let message;
 
         switch (Model) {
             case 'Like':
@@ -56,23 +60,31 @@ const createNotification = async (postId, userId,Model) => {
         }
 
         const notification = new Notification({
-            postId,
-            userId,
+            postId:postId,
+            userId:userId,
             type:Model,
             message,
         });
 
         await notification.save();
-        await User.findByIdAndUpdate(authorId, { $push: { notifications: notification._id } });
+        await User.findByIdAndUpdate(userId, { $push: { notifications: notification._id } });
 
     } catch (error) {
-        console.error(`Error creating ${actionType} notification:`, error);
+        console.error(`Error creating ${Model} notification:`, error);
     }
-};
+}; */
 const likePost = async (req, res) => {
     try {
         const postId = req.params.postId;
         const userId = req.userId;
+
+        if(!postId){
+            return res.status(400).json({ message: 'Post ID is required' });
+        }
+
+        if(!userId){
+            return res.status(401).json({ message: 'User ID is required' });
+        }
 
         const existingLikeId = await removeExistingReaction(Like, postId, userId);
         if (existingLikeId) {
@@ -88,10 +100,15 @@ const likePost = async (req, res) => {
         const like = new Like({ post: postId, user: userId });
         await like.save();
         await updatePostLikes(postId, like._id, 'add');
+        const postAuthor = Post.findById(postId).populate('author');
+        const connectedUser = await User.findById(userId);
 
-        // Create notification for the like
-        await createNotification(postId, userId, Like);
-
+        if (!postId || !postAuthor || !connectedUser) {
+            return res.status(400).json({ message: 'Failed to retrieve post or user information' });
+        }
+        
+        const message = `${connectedUser.firstname} ${connectedUser.lastname} vient de liké votre post`;
+        createNotification(message, postAuthor._id);
         res.status(200).json({ message: 'Post liked successfully', liked: true });
     } catch (error) {
         console.error('Error liking post:', error);
@@ -119,9 +136,7 @@ const dislikePost = async (req, res) => {
         await dislike.save();
         await updatePostDislikes(postId, dislike._id, 'add');
 
-        // Create notification for the dislike
-        await createNotification(postId, userId, Dislike);
-
+        
         res.status(200).json({ message: 'Post disliked successfully', disliked: true });
     } catch (error) {
         console.error('Error disliking post:', error);
