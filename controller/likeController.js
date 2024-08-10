@@ -62,12 +62,37 @@ const likePost = async (req, res) => {
         const like = new Like({ post: postId, user: userId });
         await like.save();
         await updatePostLikes(postId, like._id, 'add');
+        sendNotification(userId, postId, 'like');
         res.status(200).json({ message: 'Post liked successfully', liked: true });
     } catch (error) {
         console.error('Error liking post:', error);
         res.status(400).json({ message: 'Failed to like post', error });
     }
 };
+
+// fonction de notifications
+const sendNotification = async (userId, postId, type) => {
+    try {
+        // Récupération des utilisateurs à notifier
+        const usersToNotify = await User.find({ _id: { $ne: userId } });
+
+        // Envoi de notifications
+        for (const user of usersToNotify) {
+            const notification = new Notification({
+                user: user._id,
+                post: postId,
+                type,
+            });
+            await notification.save();
+        }
+    } catch (error) {
+        console.error('Error sending notifications:', error);
+    }
+};
+
+    
+
+// fonction de notifications quand on dislike un po
 
 const dislikePost = async (req, res) => {
     try {
