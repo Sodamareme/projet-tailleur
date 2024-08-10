@@ -16,7 +16,7 @@ export const createMessage = async (req, res) => {
 
 export const getMessages = async (req, res) => {
   try{
-    const messages = await Message.find({ $or: [{ senderId: req.userId }, { receiverId: req.userId }] }).populate('senderId, receiverId');
+    const messages = await Message.find({ $or: [{ senderId: req.userId }, { receiverId: req.userId }] }).populate('senderId').populate('receiverId');
     res.status(200).json({ message: 'Messages fetched successfully', messages, status: true });
   }catch(error){
     res.status(500).json({ message: 'Error fetching messages', error, status: false });

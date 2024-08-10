@@ -31,7 +31,7 @@ app.use(`${uri}/rate`, RateRouter);
 app.use(`${uri}/comment`, CommentRouter);
 app.use(`${uri}`, LikeRouter);
 app.use(`${uri}/statue`, StatueRouter);
-app.use(`${uri}/statue`, MessageRouter);
+app.use(`${uri}/message`, MessageRouter);
 
 // Create an HTTP server and bind it with Socket.IO
 const server = http.createServer(app);

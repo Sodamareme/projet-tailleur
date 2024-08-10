@@ -5,6 +5,6 @@ import { getToken } from '../middlewares/authMiddleware.js';
 const MessageRouter = express.Router();
 
 MessageRouter.post('/send-message', getToken, createMessage);
-MessageRouter.post('/all-messages-of-user', getToken, getMessages);
+MessageRouter.get('/all-messages-of-user', getToken, getMessages);
 
 export default MessageRouter;
