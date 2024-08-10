@@ -1,13 +1,15 @@
 import Like from '../models/like.js';
 import Dislike from '../models/dislike.js';
 import Post from '../models/post.js';
+import { createNotification } from './notificationController.js';
 
+import User from '../models/user.js';
 const removeExistingReaction = async (Model, post, user) => {
     const existingReaction = await Model.findOne({ post, user });
     if (existingReaction) {
         console.log('Removing existing reaction:');
         await existingReaction.deleteOne();
-        return existingReaction._id; // Return the ID of the removed reaction
+        return existingReaction._id;
     }
     return null;
 };
@@ -15,11 +17,9 @@ const removeExistingReaction = async (Model, post, user) => {
 const updatePostLikes = async (postId, likeId, action) => {
     try {
         if (action === 'add') {
-            const postUpdate = await Post.findByIdAndUpdate(postId, { $addToSet: { likes: likeId } }, { new: true });
-            console.log('Post updated after like:');
+            await Post.findByIdAndUpdate(postId, { $addToSet: { likes: likeId } }, { new: true });
         } else if (action === 'remove') {
-            const postUpdate = await Post.findByIdAndUpdate(postId, { $pull: { likes: likeId } }, { new: true });
-            console.log('Post updated after like removal:');
+            await Post.findByIdAndUpdate(postId, { $pull: { likes: likeId } }, { new: true });
         }
     } catch (error) {
         console.error(`Error updating post after like ${action}:`, error);
@@ -29,40 +29,87 @@ const updatePostLikes = async (postId, likeId, action) => {
 const updatePostDislikes = async (postId, dislikeId, action) => {
     try {
         if (action === 'add') {
-            const postUpdate = await Post.findByIdAndUpdate(postId, { $addToSet: { dislikes: dislikeId } }, { new: true });
-            console.log('Post updated after dislike:', postUpdate);
+            await Post.findByIdAndUpdate(postId, { $addToSet: { dislikes: dislikeId } }, { new: true });
         } else if (action === 'remove') {
-            const postUpdate = await Post.findByIdAndUpdate(postId, { $pull: { dislikes: dislikeId } }, { new: true });
-            console.log('Post updated after dislike removal:');
+            await Post.findByIdAndUpdate(postId, { $pull: { dislikes: dislikeId } }, { new: true });
         }
     } catch (error) {
         console.error(`Error updating post after dislike ${action}:`, error);
     }
 };
 
+/* const createNotification = async (postId, userId,Model) => {
+    try {
+      
+          console.log(userId);
+
+         postId = await Post.findById(postId).populate('author'); // Assuming 'author' field references the post's author
+          // The user who should receive the notification
+          console.log(postId);
+          let message;
+
+        switch (Model) {
+            case 'Like':
+                message = `${userId} liked your post.`;
+                break;
+            case 'Dislike':
+                message = `${userId} disliked your post.`;
+                break;
+            default:
+                message = `${userId} interacted with your post.`;
+        }
+
+        const notification = new Notification({
+            postId:postId,
+            userId:userId,
+            type:Model,
+            message,
+        });
+
+        await notification.save();
+        await User.findByIdAndUpdate(userId, { $push: { notifications: notification._id } });
+
+    } catch (error) {
+        console.error(`Error creating ${Model} notification:`, error);
+    }
+}; */
 const likePost = async (req, res) => {
     try {
         const postId = req.params.postId;
         const userId = req.userId;
 
-        // Remove existing like if it exists
+        if(!postId){
+            return res.status(400).json({ message: 'Post ID is required' });
+        }
+
+        if(!userId){
+            return res.status(401).json({ message: 'User ID is required' });
+        }
+
         const existingLikeId = await removeExistingReaction(Like, postId, userId);
         if (existingLikeId) {
             await updatePostLikes(postId, existingLikeId, 'remove');
             return res.status(200).json({ message: 'Like removed', liked: false });
         }
 
-        // Remove existing dislike if it exists
         const existingDislikeId = await removeExistingReaction(Dislike, postId, userId);
         if (existingDislikeId) {
-            await updatePostDislikes(postId, existingDislikeId, 'remove'); 
+            await updatePostDislikes(postId, existingDislikeId, 'remove');
         }
 
-        // Add new like
         const like = new Like({ post: postId, user: userId });
         await like.save();
         await updatePostLikes(postId, like._id, 'add');
-        sendNotification(userId, postId, 'like');
+
+        const postAuthor = Post.findById(postId).populate('author');
+        const connectedUser = await User.findById(userId);
+
+        if (!postId || !postAuthor || !connectedUser) {
+            return res.status(400).json({ message: 'Failed to retrieve post or user information' });
+        }
+        
+        const message = `${connectedUser.firstname} ${connectedUser.lastname} vient de liké votre post`;
+        createNotification(message, postAuthor._id);
         res.status(200).json({ message: 'Post liked successfully', liked: true });
     } catch (error) {
         console.error('Error liking post:', error);
@@ -99,23 +146,22 @@ const dislikePost = async (req, res) => {
         const postId = req.params.postId;
         const userId = req.userId;
 
-        // Remove existing dislike if it exists
         const existingDislikeId = await removeExistingReaction(Dislike, postId, userId);
         if (existingDislikeId) {
             await updatePostDislikes(postId, existingDislikeId, 'remove');
             return res.status(200).json({ message: 'Dislike removed', disliked: false });
         }
 
-        // Remove existing like if it exists
         const existingLikeId = await removeExistingReaction(Like, postId, userId);
         if (existingLikeId) {
             await updatePostLikes(postId, existingLikeId, 'remove');
         }
 
-        // Add new dislike
         const dislike = new Dislike({ post: postId, user: userId });
         await dislike.save();
         await updatePostDislikes(postId, dislike._id, 'add');
+
+        
         res.status(200).json({ message: 'Post disliked successfully', disliked: true });
     } catch (error) {
         console.error('Error disliking post:', error);
@@ -124,3 +170,4 @@ const dislikePost = async (req, res) => {
 };
 
 export { likePost, dislikePost };
+ 

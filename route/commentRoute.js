@@ -3,6 +3,7 @@ import { createComment, deleteComment, updateComment } from '../controller/comme
 import { getToken } from '../middlewares/authMiddleware.js';
 import { validateComment } from '../middlewares/validatorMiddleware.js';
 
+
 const CommentRouter = express.Router();
 
 CommentRouter.post('/create-comment', getToken, validateComment, createComment);

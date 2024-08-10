@@ -3,6 +3,8 @@ import { createRate, allRates, updateRate, deleteRate } from '../controller/rate
 import { getToken } from '../middlewares/authMiddleware.js';
 import { validateRate } from '../middlewares/validatorMiddleware.js';
 
+
+
 const RateRouter = express.Router();
 
 RateRouter.post('/create-rate', getToken, validateRate, createRate);

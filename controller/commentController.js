@@ -2,6 +2,9 @@
 import { request } from 'express';
 import Comment from '../models/comment.js';
 import Post from '../models/post.js';
+import User from '../models/user.js';
+import { createNotification } from './notificationController.js';
+
 
 const createComment = async (req, res) => {
     try {
@@ -12,6 +15,18 @@ const createComment = async (req, res) => {
         if (!post) {
             return res.status(404).json({ message: `Post with ${postId} does not found`, status: false });
         }
+
+        const postAuteur = Post.findById(postId).populate('author');
+        const connectedUser = await User.findById(author);
+
+        if (!postId || !postAuteur || !connectedUser) {
+            return res.status(400).json({ message: 'Failed to retrieve post or user information' });
+        }
+
+        const message = `${connectedUser.firstname} ${connectedUser.lastname} vient d'\etre commenter votre post`;
+        createNotification(message, postAuteur._id);
+
+
 
         const comment = new Comment({
             content,

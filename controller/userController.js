@@ -2,6 +2,8 @@ import User from "../models/user.js";
 import Role from "../models/role.js";
 import { hashPassword, generateToken } from "../utils/utils.js";
 import bcrypt from 'bcryptjs';
+import { createNotification } from './notificationController.js';
+
 
 const createUser = async (req, res) => {
     try {
@@ -83,8 +85,17 @@ const follow = async (req, res) => {
             return res.status(404).json({ message: 'Following user not found', status: false });
         }
 
+
         connectedUser.followings.push(followingUserId); // ajout de la liste de ses abonnements
         followingUser.followers.push(connectedUserId);
+        
+
+        if (!followingUser || !connectedUser) {
+            return res.status(400).json({ message: 'Failed to retrieve post or user information' });
+        }
+
+        const message = `${connectedUser.firstname} ${connectedUser.lastname} vous suit`;
+        createNotification(message, followingUser._id);
 
         connectedUser.save();
         followingUser.save();
@@ -119,4 +130,40 @@ const unfollow = async (req, res) => {
     }
 }
 
-export { createUser, login, follow, unfollow };
+const becomeTaillor = async (req, res) =>{
+    const userId = req.userId;
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized', status: false });
+    }
+
+    try{
+        const user = await User.findById(userId);
+
+        if(!user){
+            return res.status(404).json({ message: 'User not found', status: false });
+        }
+
+        const tailorRole = await Role.findOne({ name: 'TAILOR' });
+        if (!tailorRole) {
+            return res.status(500).json({ message: 'TAILOR role not found', status: false });
+        }
+
+        const hasTailorRole = user.roles.includes(tailorRole._id);
+        if (hasTailorRole) {
+            return res.status(400).json({ message: 'User is already a tailor', status: false });
+        }
+
+        user.roles.push(tailorRole._id);
+
+        user.credit = 30;
+
+        await user.save();
+
+        res.status(200).json({ message: 'User successfully became a tailor',  user, status: true });
+    }catch(error){
+        res.status(500).json({ message: 'Error updating user to tailor', error, status: false });
+    }
+
+}
+
+export { createUser, login, follow, unfollow, becomeTaillor };

@@ -12,6 +12,10 @@ const postSchema = new mongoose.Schema({
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Like' }],
     dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Dislike' }],
+    reports: [{
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        reason: { type: String, required: true }
+    }]
 });
 
 const Post = mongoose.model('Post', postSchema);
