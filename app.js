@@ -12,6 +12,7 @@ import CommentRouter from './route/commentRoute.js';
 import LikeRouter from './route/likeRoute.js';
 import StatueRouter from './route/statueRoute.js';
 import MessageRouter from './route/messageRouter.js';
+import MesureRouter from './route/mesureRoute.js';
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use(`${uri}/comment`, CommentRouter);
 app.use(`${uri}`, LikeRouter);
 app.use(`${uri}/statue`, StatueRouter);
 app.use(`${uri}/message`, MessageRouter);
+app.use(`${uri}/mesure`, MesureRouter);
 
 // Create an HTTP server and bind it with Socket.IO
 const server = http.createServer(app);
