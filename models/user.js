@@ -12,8 +12,13 @@ const userSchema = new mongoose.Schema({
     followers: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
     //status: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Statue' }],
     //notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }] 
+    views: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+    UserBlocked: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    status: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Statue' }]
+
 
     //les personnes que t'ont suivi // abonné
+
 });
 
 const User = mongoose.model('User', userSchema);

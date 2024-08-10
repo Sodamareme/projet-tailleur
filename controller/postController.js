@@ -7,6 +7,8 @@ import Dislike from "../models/dislike.js";
 import Rate from "../models/rate.js";
 import Comment from "../models/comment.js";
 import { createNotification } from './notificationController.js';
+import { sendMail } from "../utils/utils.js";   
+
 
 
 const createPost = async (req, res) => {
@@ -70,11 +72,15 @@ const updatePost = async (req, res) => {
 const deletePost = async (req, res) => {
     const postId = req.params.id;
     const userId = req.userId;
-    genericDeletePost(res, postId, userId);
+    if(genericDeletePost(postId, userId)){
+        res.status(200).json({ message: 'Post deleted successfully', status: true });
+    }else{
+        res.status(400).json({ message: 'Failed to delete post', status: false });
+    }
     
 };
 
-async function genericDeletePost(res, postId, userId){
+/*async function genericDeletePost(res, postId, userId){
     try{
         const post = await Post.findById(postId);
 
@@ -110,7 +116,38 @@ async function genericDeletePost(res, postId, userId){
         }
     }
     
+}*/
+
+async function genericDeletePost(postId, userId) {
+    try {
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            console.error('Post not found');
+            return false;
+        }
+
+        if (post.author.toString() !== userId.toString()) {
+            console.error('User does not have the required permissions to delete this post');
+            return false;
+        }
+
+        await Favorite.deleteMany({ post: postId });
+        await Comment.deleteMany({ post: postId });
+        await Like.deleteMany({ post: postId });
+        await Dislike.deleteMany({ post: postId });
+        await Rate.deleteMany({ post: postId });
+        
+        await post.deleteOne();
+
+        console.log('Post and associated references deleted successfully');
+        return true;
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        return false;
+    }
 }
+
 
 const sharePost = async (req, res) => {
     try {
@@ -212,16 +249,23 @@ const reportPost = async (req, res) => {
         // Add the report to the reports array
         post.reports.push({ userId, reason });
 
-        // Delete the post if the number of reports reaches 3
-
-        if (post.reports.length >= 2) {
-
-            return genericDeletePost(res, post._id.toString(), post.author.toString());
-            
+        if(post.reports.length === 2){
+            const subject = 'Your post has been reported twice';
+            const message = 'Your post has been reported twice, it will be deleted when it reaches 4 reports.';
+            const author = await User.findById(post.author); 
+            await sendMail(author.email, subject, message);
         }
-
-        await post.save();
-        return res.status(200).json({ message: 'Post reported successfully', post, status: true });
+        // Delete the post if the number of reports reaches 3
+        if (post.reports.length > 3) {
+            if(genericDeletePost(post._id.toString(), post.author.toString())){
+                res.status(200).json({ message: 'Post reported successfully', status: true });
+            }else{
+                res.status(400).json({ message: 'Failed to report post', status: false });
+            }
+        }else{
+            await post.save();
+            res.status(200).json({ message: 'Post reported successfully', status: true });
+        }
     } catch (error) {
         return res.status(400).json({ message: 'Failed to report post', error: error.message, status: false });
     }
