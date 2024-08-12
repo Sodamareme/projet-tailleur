@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import http from 'http'; // Import http module to create the server
+import http from 'http'; 
 import { Server as SocketIO } from 'socket.io'; // Import Socket.IO
 import dbConnect from './database/connexion-db.js';
 import RoleRouter from './route/roleRoute.js';
@@ -11,7 +11,6 @@ import RateRouter from './route/rateRoute.js';
 import CommentRouter from './route/commentRoute.js';
 import LikeRouter from './route/likeRoute.js';
 import StatueRouter from './route/statueRoute.js';
-/* import NotificationRouter from './route/notificationRoute.js' */
 import viewRouter from './route/viewRoute.js';
 import blockRouter from './route/blockRoute.js';
 import MessageRouter from './route/messageRouter.js';
@@ -36,7 +35,6 @@ app.use(`${uri}/rate`, RateRouter);
 app.use(`${uri}/comment`, CommentRouter);
 app.use(`${uri}`, LikeRouter);
 app.use(`${uri}/statue`, StatueRouter);
-/* app.use(`${uri}`, NotificationRouter); */
 app.use(`${uri}/view`, viewRouter);
 app.use(`${uri}/block`, blockRouter);
 app.use(`${uri}/message`, MessageRouter);
@@ -61,6 +59,4 @@ io.on('connection', (socket) => {
 
 server.listen(port, () => { console.log(`Your application is started on http://www.beyond-fashion.com:${port}`);});
 
-
-//app.listen(port, () => console.log(`Your application is started on http://www.beyond-fashion.com:${port}`));
 
