@@ -61,7 +61,7 @@ const deleteExpiredStatues = async () => {
     try {
         const now = new Date();
         const result = await Statue.deleteMany({ expires_at: { $lt: now } });
-        console.log(`${result.deletedCount} expired statues deleted.`);
+       /*  console.log(`${result.deletedCount} expired statues deleted.`); */
     } catch (error) {
         console.error('Error deleting expired statues:', error);
     }

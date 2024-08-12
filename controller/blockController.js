@@ -11,6 +11,7 @@ const UserBlocked = async (req, res) => {
         }
 
         const blockedUser = await User.findById(blockedUserId);
+        
         if (!blockedUser) {
             return res.status(404).json({ message: 'Blocked user not found' });
         }
