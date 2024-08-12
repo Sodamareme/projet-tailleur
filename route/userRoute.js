@@ -6,7 +6,7 @@ const UserRouter = express.Router();
 /**
  * @swagger
  * tags:
- *   name: Users
+ *   name: User
  *   description: API pour gérer les utilisateurs
  */
 
@@ -15,7 +15,7 @@ const UserRouter = express.Router();
  * /user/create:
  *   post:
  *     summary: Crée un nouvel utilisateur
- *     tags: [Users]
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:
@@ -75,7 +75,7 @@ UserRouter.post('/create', createUser);
  * /user/login:
  *   post:
  *     summary: Connecte un utilisateur
- *     tags: [Users]
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:
@@ -104,7 +104,7 @@ UserRouter.post('/login', login);
  * /user/follow:
  *   post:
  *     summary: Suivre un autre utilisateur
- *     tags: [Users]
+ *     tags: [User]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -134,7 +134,7 @@ UserRouter.post('/follow', getToken, follow);
  * /user/unfollow:
  *   post:
  *     summary: Ne plus suivre un utilisateur
- *     tags: [Users]
+ *     tags: [User]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -162,34 +162,11 @@ UserRouter.post('/unfollow', getToken, unfollow);
 /**
  * @swagger
  * /user/become-taillor:
- *   post:
+ *   get:
  *     summary: Devenir tailleur
- *     tags: [Users]
+ *     tags: [User]
  *     security:
  *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               tailleurDetails:
- *                 type: object
- *                 description: |
- *                   Informations sur le tailleur, incluant son expérience et ses compétences.
- *                 properties:
- *                   experience:
- *                     type: string
- *                     description: |
- *                       Nombre d'années d'expérience en couture.
- *                   skills:
- *                     type: array
- *                     items:
- *                       type: string
- *                     description: |
- *                       Une liste des compétences du tailleur. 
- *                       Chaque compétence doit être un mot ou une phrase décrivant une aptitude spécifique en couture.
  *     responses:
  *       200:
  *         description: Statut de tailleur attribué avec succès
@@ -198,6 +175,6 @@ UserRouter.post('/unfollow', getToken, unfollow);
  *       400:
  *         description: Données invalides
  */
-UserRouter.post('/become-taillor', getToken, becomeTaillor);
+UserRouter.get('/become-taillor', getToken, becomeTaillor);
 
 export default UserRouter;
