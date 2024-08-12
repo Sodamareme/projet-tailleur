@@ -23,7 +23,7 @@ const createComment = async (req, res) => {
             return res.status(400).json({ message: 'Failed to retrieve post or user information' });
         }
 
-        const message = `${connectedUser.firstname} ${connectedUser.lastname} vient d'\etre commenter votre post`;
+        const message = `${connectedUser.firstname} ${connectedUser.lastname} vient de commenter votre post`;
         createNotification(message, postAuteur._id);
 
 

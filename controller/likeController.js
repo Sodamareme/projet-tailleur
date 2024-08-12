@@ -38,6 +38,41 @@ const updatePostDislikes = async (postId, dislikeId, action) => {
     }
 };
 
+/* const createNotification = async (postId, userId,Model) => {
+    try {
+      
+          console.log(userId);
+
+         postId = await Post.findById(postId).populate('author'); // Assuming 'author' field references the post's author
+          // The user who should receive the notification
+          console.log(postId);
+          let message;
+
+        switch (Model) {
+            case 'Like':
+                message = `${userId} liked your post.`;
+                break;
+            case 'Dislike':
+                message = `${userId} disliked your post.`;
+                break;
+            default:
+                message = `${userId} interacted with your post.`;
+        }
+
+        const notification = new Notification({
+            postId:postId,
+            userId:userId,
+            type:Model,
+            message,
+        });
+
+        await notification.save();
+        await User.findByIdAndUpdate(userId, { $push: { notifications: notification._id } });
+
+    } catch (error) {
+        console.error(`Error creating ${Model} notification:`, error);
+    }
+}; */
 const likePost = async (req, res) => {
     try {
         const postId = req.params.postId;
@@ -65,7 +100,6 @@ const likePost = async (req, res) => {
         const like = new Like({ post: postId, user: userId });
         await like.save();
         await updatePostLikes(postId, like._id, 'add');
-
         const postAuthor = Post.findById(postId).populate('author');
         const connectedUser = await User.findById(userId);
 
@@ -81,30 +115,6 @@ const likePost = async (req, res) => {
         res.status(400).json({ message: 'Failed to like post', error });
     }
 };
-
-// fonction de notifications
-const sendNotification = async (userId, postId, type) => {
-    try {
-        // Récupération des utilisateurs à notifier
-        const usersToNotify = await User.find({ _id: { $ne: userId } });
-
-        // Envoi de notifications
-        for (const user of usersToNotify) {
-            const notification = new Notification({
-                user: user._id,
-                post: postId,
-                type,
-            });
-            await notification.save();
-        }
-    } catch (error) {
-        console.error('Error sending notifications:', error);
-    }
-};
-
-    
-
-// fonction de notifications quand on dislike un po
 
 const dislikePost = async (req, res) => {
     try {
