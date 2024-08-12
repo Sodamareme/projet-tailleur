@@ -17,7 +17,8 @@ import blockRouter from './route/blockRoute.js';
 import MessageRouter from './route/messageRouter.js';
 import RechargeRouter from './route/rechargeRoute.js';
 import MesureRouter from './route/mesureRoute.js';
-
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 dotenv.config();
 
 const app = express();
@@ -27,7 +28,43 @@ const uri = process.env.URI;
 dbConnect(mongo_uri);
 
 app.use(express.json());
+app.use(express.json());
+const swaggerDefinition = {
+    openapi: '3.0.0',
+    info: {
+      title: 'API Documentation',
+      version: '1.0.0',
+      description: 'Documentation de l\'API de mon projet Express',
+    },
+    servers: [
+      {
+        url: `http://localhost:${port}/api`, // Update this line
+        description: 'Serveur local'
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
+  };
 
+  const options = {
+    swaggerDefinition,
+    apis: ['./route/*.js'], // Chemin vers les fichiers où swagger-jsdoc va lire les commentaires
+  };
+  
+  const swaggerSpec = swaggerJsdoc(options);
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(`${uri}/role`, RoleRouter); // pour creer un role
 app.use(`${uri}/user`, UserRouter); // Pourcreer un user
 app.use(`${uri}/post`, PostRouter); // Pour creer un post
