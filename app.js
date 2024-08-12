@@ -16,7 +16,6 @@ import blockRouter from './route/blockRoute.js';
 import MessageRouter from './route/messageRouter.js';
 import RechargeRouter from './route/rechargeRoute.js';
 import MesureRouter from './route/mesureRoute.js';
-
 import swaggerdocs from './utils/swagger.js'; // Import the swaggerSpec
 dotenv.config();
 
@@ -54,6 +53,8 @@ io.on('connection', (socket) => {
         console.log('User disconnected');
     });
 });
+
+swaggerdocs(app, port);  // Import the swagger docs middleware and pass the app and port to it.
 
 server.listen(port, () => { console.log(`Your application is started on http://www.beyond-fashion.com:${port}`);});
 
