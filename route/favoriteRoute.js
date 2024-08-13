@@ -13,10 +13,10 @@ const FavoriteRouter = express.Router();
 
 /**
  * @swagger
- * /favorites/add-delete-favorite:
+ * /favorite/add-delete-favorite:
  *   post:
- *     summary: Add or remove a favorite item
- *     tags: [Favorite]
+ *     summary: Add or remove a post from the user's favorites.
+ *     tags: [Favorites]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -38,22 +38,26 @@ const FavoriteRouter = express.Router();
  *                 example: "add"
  *     responses:
  *       200:
- *         description: Successfully added or removed favorite
+ *         description: Successfully added or removed favorite the post from favorites
+ *               postId:
+ *                 type: string
+ *                 description: The ID of the post to be added or removed from favorites.
+ *                 example: "64d789f9e0324d45a87ab123"
+ *  
+ *       401:
+ *         description: Unauthorized
+ *       400:
+ *         description: Bad request, invalid input
+ *       404:
+ *         description: User or post not found.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
  *                 message:
  *                   type: string
- *                   example: "Favorite added successfully"
- *       401:
- *         description: Unauthorized
- *       400:
- *         description: Bad request, invalid input
+ *                   example: "User not found"
  */
 FavoriteRouter.post('/add-delete-favorite', getToken, addToFavorites);
 

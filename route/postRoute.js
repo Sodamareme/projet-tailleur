@@ -1,21 +1,22 @@
 import express from 'express';
-import { createPost,getAllPosts,updatePost,deletePost,sharePost,disableShareButton,reportPost } from '../controller/postController.js';
+import { createPost, getAllPosts, updatePost, deletePost, sharePost, disableShareButton, reportPost } from '../controller/postController.js';
 import { getToken } from '../middlewares/authMiddleware.js';
-import {validatePost} from '../middlewares/validatorMiddleware.js';
+import { validatePost } from '../middlewares/validatorMiddleware.js';
+
 const PostRouter = express.Router();
 
 /**
  * @swagger
  * tags:
  *   name: Post
- *   description: API endpoints for managing posts
+ *   description: API pour gérer les publications
  */
 
 /**
  * @swagger
- * /posts/create-post:
+ * /post/create-post:
  *   post:
- *     summary: Create a new post
+ *     summary: Créer une nouvelle publication
  *     tags: [Post]
  *     security:
  *       - bearerAuth: []
@@ -26,79 +27,56 @@ const PostRouter = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               title:
- *                 type: string
- *                 example: "New Post Title"
  *               content:
+ *                 content: string
+ *                 description: Titre de la publication
+ *               description:
  *                 type: string
- *                 example: "This is the content of the post."
- *               authorId:
- *                 type: string
- *                 example: "userId123"
+ *                 description: Contenu de la publication
+ *             required:
+ *               - content
+ *               - description
  *     responses:
  *       201:
- *         description: Post created successfully
- *       401:
- *         description: Unauthorized
+ *         description: Publication créée avec succès
  *       400:
- *         description: Bad request
+ *         description: Erreur de validation
+ *       401:
+ *         description: Non autorisé
  */
 PostRouter.post('/create-post', getToken, validatePost, createPost);
 
 /**
  * @swagger
- * /posts:
+ * /post:
  *   get:
- *     summary: Get all posts
+ *     summary: Obtenir toutes les publications
  *     tags: [Post]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of posts
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                     example: "postId123"
- *                   title:
- *                     type: string
- *                     example: "New Post Title"
- *                   content:
- *                     type: string
- *                     example: "This is the content of the post."
- *                   authorId:
- *                     type: string
- *                     example: "userId123"
- *                   createdAt:
- *                     type: string
- *                     format: date-time
- *                     example: "2024-08-12T10:00:00Z"
+ *         description: Liste des publications
  *       401:
- *         description: Unauthorized
+ *         description: Non autorisé
  */
-PostRouter.get('/posts', getToken, getAllPosts);
+PostRouter.get('/', getToken, getAllPosts);
 
 /**
  * @swagger
- * /posts/update-post/{id}:
+ * /post/update-post/{id}:
  *   put:
- *     summary: Update an existing post
+ *     summary: Mettre à jour une publication
  *     tags: [Post]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
- *         required: true
  *         schema:
  *           type: string
- *         description: ID of the post to update
+ *         required: true
+ *         description: ID de la publication à mettre à jour
  *     requestBody:
  *       required: true
  *       content:
@@ -108,119 +86,120 @@ PostRouter.get('/posts', getToken, getAllPosts);
  *             properties:
  *               title:
  *                 type: string
- *                 example: "Updated Post Title"
+ *                 description: Titre de la publication
  *               content:
  *                 type: string
- *                 example: "This is the updated content of the post."
+ *                 description: Contenu de la publication
  *     responses:
  *       200:
- *         description: Post updated successfully
- *       401:
- *         description: Unauthorized
+ *         description: Publication mise à jour avec succès
  *       400:
- *         description: Bad request
+ *         description: Erreur de validation
+ *       401:
+ *         description: Non autorisé
+ *       404:
+ *         description: Publication non trouvée
  */
 PostRouter.put('/update-post/:id', getToken, validatePost, updatePost);
 
 /**
  * @swagger
- * /posts/delete-post/{id}:
+ * /post/delete-post/{id}:
  *   delete:
- *     summary: Delete a post
+ *     summary: Supprimer une publication
  *     tags: [Post]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
- *         required: true
  *         schema:
  *           type: string
- *         description: ID of the post to delete
+ *         required: true
+ *         description: ID de la publication à supprimer
  *     responses:
  *       200:
- *         description: Post deleted successfully
+ *         description: Publication supprimée avec succès
  *       401:
- *         description: Unauthorized
- *       400:
- *         description: Bad request
+ *         description: Non autorisé
+ *       404:
+ *         description: Publication non trouvée
  */
-PostRouter.delete('/delete-post/:id', getToken, deletePost);    
+PostRouter.delete('/delete-post/:id', getToken, deletePost);
 
 /**
  * @swagger
- * /posts/share-post/{id}:
+ * /post/share-post/{id}:
  *   post:
- *     summary: Share a post
+ *     summary: Partager une publication
  *     tags: [Post]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
- *         required: true
  *         schema:
  *           type: string
- *         description: ID of the post to share
+ *         required: true
+ *         description: ID de la publication à partager
  *     responses:
  *       200:
- *         description: Post shared successfully
+ *         description: Publication partagée avec succès
  *       401:
- *         description: Unauthorized
- *       400:
- *         description: Bad request
+ *         description: Non autorisé
+ *       404:
+ *         description: Publication non trouvée
  */
-PostRouter.post('/share-post/:id',getToken, sharePost);   
+PostRouter.post('/share-post/:id', getToken, sharePost);
 
 /**
  * @swagger
- * /posts/disable-share/{id}:
+ * /post/disable-share/{id}:
  *   put:
- *     summary: Disable sharing of a post
+ *     summary: Désactiver le partage d'une publication
  *     tags: [Post]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
- *         required: true
  *         schema:
  *           type: string
- *         description: ID of the post to disable sharing
+ *         required: true
+ *         description: ID de la publication pour désactiver le partage
  *     responses:
  *       200:
- *         description: Sharing disabled for post
+ *         description: Partage désactivé avec succès
  *       401:
- *         description: Unauthorized
- *       400:
- *         description: Bad request
+ *         description: Non autorisé
+ *       404:
+ *         description: Publication non trouvée
  */
-PostRouter.put('/desable-share/:id',getToken, disableShareButton);  
+PostRouter.put('/disable-share/:id', getToken, disableShareButton);
 
 /**
  * @swagger
- * /posts/report-post/{postId}:
+ * /post/report-post/{postId}:
  *   post:
- *     summary: Report a post
- *     tags: [Post]
+ *     summary: Signaler une publication
+ *     tags: [Posts]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: postId
- *         required: true
  *         schema:
  *           type: string
- *         description: ID of the post to report
+ *         required: true
+ *         description: ID de la publication à signaler
  *     responses:
  *       200:
- *         description: Post reported successfully
+ *         description: Publication signalée avec succès
  *       401:
- *         description: Unauthorized
- *       400:
- *         description: Bad request
+ *         description: Non autorisé
+ *       404:
+ *         description: Publication non trouvée
  */
-PostRouter.post('/report-post/:postId', getToken, reportPost); 
-
+PostRouter.post('/report-post/:postId', getToken, reportPost);
 
 export default PostRouter;

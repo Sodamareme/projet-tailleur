@@ -1,8 +1,8 @@
 import express from 'express';
-import { createMessage, getMessages } from '../controller/messageController.js';
 import { getToken } from '../middlewares/authMiddleware.js';
+import { createMessage, getMessages } from '../controller/messageController.js';
 
-const MessageRouter = express.Router();
+const MessagerRouter = express.Router();
 
 /**
  * @swagger
@@ -34,18 +34,12 @@ const MessageRouter = express.Router();
  *                 example: "Hello, how are you?"
  *     responses:
  *       200:
- *         description: Message sent successfully
+ *         description: Mesure created successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Message sent successfully"
  *       401:
  *         description: Unauthorized
  *       400:
@@ -91,4 +85,6 @@ MessageRouter.post('/send-message', getToken, createMessage);
  */
 MessageRouter.get('/all-messages-of-user', getToken, getMessages);
 
-export default MessageRouter;
+
+
+export default MessagerRouter;

@@ -8,17 +8,15 @@ const RechargeRouter = express.Router();
  * @swagger
  * tags:
  *   name: Recharge
- *   description: API endpoints for managing recharges
+ *   description: API pour gérer les rechargements
  */
 
 /**
  * @swagger
- * /recharges/new-recharge:
+ * /recharge/new-recharge:
  *   post:
- *     summary: Create a new recharge
+ *     summary: Connecte un utilisateur
  *     tags: [Recharge]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -26,34 +24,24 @@ const RechargeRouter = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               userId:
- *                 type: string
- *                 example: "userId123"
  *               amount:
- *                 type: number
- *                 example: 50.00
- *               description:
- *                 type: string
- *                 example: "Monthly subscription"
+ *                 type: integer
+ *                 description: |
+ *                   Le montant de rechargement
  *     responses:
- *       201:
- *         description: Recharge created successfully
+ *       200:
+ *         description: Rechargement réussi avec succès
  *       401:
- *         description: Unauthorized
- *       400:
- *         description: Bad request
- *     url: /recharges/new-recharge
+ *         description: Vous n'êtes pas authentifié
  */
 RechargeRouter.post('/new-recharge', getToken, newRecharge);
 
 /**
  * @swagger
- * /recharges/recharging:
+ * /recharge/recharging:
  *   post:
- *     summary: Process a recharge
+ *     summary: Connecte un utilisateur
  *     tags: [Recharge]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -61,23 +49,15 @@ RechargeRouter.post('/new-recharge', getToken, newRecharge);
  *           schema:
  *             type: object
  *             properties:
- *               userId:
- *                 type: string
- *                 example: "userId123"
- *               amount:
- *                 type: number
- *                 example: 20.00
- *               paymentMethod:
- *                 type: string
- *                 example: "credit_card"
+ *               code:
+ *                 type: integer
+ *                 description: |
+ *                   Le montant de rechargement
  *     responses:
  *       200:
- *         description: Recharge processed successfully
+ *         description: Rechargement réussi avec succès
  *       401:
- *         description: Unauthorized
- *       400:
- *         description: Bad request
- *     url: /recharges/recharging
+ *         description: Vous n'êtes pas authentifié
  */
 RechargeRouter.post('/recharging', getToken, recharging);
 

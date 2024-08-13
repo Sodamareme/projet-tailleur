@@ -30,8 +30,6 @@ const recharging = async (req, res) => {
     try{
         const recharge = await Recharge.findOne({ code });
 
-        console.log(recharge);
-
         if (!recharge) {
             return res.status(404).json({ message: 'Ce code de rechargement n\'existe pas', status: false });
         }

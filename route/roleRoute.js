@@ -7,23 +7,56 @@ const RoleRouter = express.Router();
  * @swagger
  * /role/save:
  *   post:
- *     summary: Créer un nouveau rôle
- *     tags: [Role]
+ *     summary: Create a new role
+ *     description: This endpoint allows you to create a new role in the system.
+ *     tags:
+ *       - Role
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
  *             properties:
- *               roleName:
+ *               name:
  *                 type: string
- *                 description: Le nom du rôle
+ *                 example: "Admin"
+ *               description:
+ *                 type: string
+ *                 example: "Administrator role with full access"
  *     responses:
- *       200:
- *         description: Rôle créé avec succès
+ *       201:
+ *         description: Role added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Role added successfully"
+ *                 role:
+ *                   $ref: '#/components/schemas/Role'
+ *                 status:
+ *                   type: boolean
+ *                   example: true
  *       400:
- *         description: Requête invalide
+ *         description: Error while adding role
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Error while adding role"
+ *                 error:
+ *                   type: string
+ *                 status:
+ *                   type: boolean
+ *                   example: false
  */
 RoleRouter.post('/save', saveRole);
 

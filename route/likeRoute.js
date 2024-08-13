@@ -1,37 +1,81 @@
-// routes/likeRoute.js
 import express from 'express';
 import { likePost, dislikePost } from '../controller/likeController.js';
 import { getToken } from '../middlewares/authMiddleware.js';
-
 
 const LikeRouter = express.Router();
 
 /**
  * @swagger
- * tags:
- *   name: Like
- *   description: API endpoints for liking and disliking posts
+ * /Reaction/like/{postId}:
+ *   get:
+ *     summary: Like a post
+ *     tags: 
+ *       - Reaction
+ *     description: Adds a like to a post. If the user has already liked the post, the like will be removed.
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the post to like.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully liked or unliked the post.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 liked:
+ *                   type: boolean
+ *       400:
+ *         description: Invalid request or missing post ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 error:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized, user ID is required.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
+LikeRouter.get('/like/:postId', getToken, likePost);
 
 /**
  * @swagger
- * /likes/{postId}:
+ * /Reaction/dislike/{postId}:
  *   get:
- *     summary: Like a post
- *     tags: [Like]
- *     security:
- *       - bearerAuth: []
+ *     summary: Dislike a post
+ *     tags: 
+ *       - Reaction
+ *     description: Adds a dislike to a post. If the user has already disliked the post, the dislike will be removed.
  *     parameters:
- *       - name: postId
- *         in: path
+ *       - in: path
+ *         name: postId
  *         required: true
- *         description: The ID of the post to like
  *         schema:
  *           type: string
- *           example: "abcdef1234567890"
+ *         description: The ID of the post to dislike.
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Post liked successfully
+ *         description: Successfully disliked or undisliked the post.
  *         content:
  *           application/json:
  *             schema:
@@ -48,42 +92,7 @@ const LikeRouter = express.Router();
  *       404:
  *         description: Post not found
  */
+
 LikeRouter.get('/dislike/:postId', getToken, dislikePost);
-/**
- * @swagger
- * /likes/dislike/{postId}:
- *   get:
- *     summary: Dislike a post
- *     tags: [Like]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name: postId
- *         in: path
- *         required: true
- *         description: The ID of the post to dislike
- *         schema:
- *           type: string
- *           example: "abcdef1234567890"
- *     responses:
- *       200:
- *         description: Post disliked successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Post disliked successfully"
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: Post not found
- */
-LikeRouter.get('/:postId', getToken, likePost);
 
 export default LikeRouter;
