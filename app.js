@@ -17,6 +17,7 @@ import MessageRouter from './route/messageRouter.js';
 import RechargeRouter from './route/rechargeRoute.js';
 import MesureRouter from './route/mesureRoute.js';
 import swaggerdocs from './utils/swagger.js'; // Import the swaggerSpec
+
 dotenv.config();
 
 const app = express();
@@ -26,10 +27,10 @@ const uri = process.env.URI;
 dbConnect(mongo_uri);
 
 app.use(express.json());
-/* app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec)); */
-app.use(`${uri}/role`, RoleRouter);
-app.use(`${uri}/user`, UserRouter);
-app.use(`${uri}/post`, PostRouter);
+
+app.use(`${uri}/role`, RoleRouter); // pour creer un role
+app.use(`${uri}/user`, UserRouter); // Pourcreer un user
+app.use(`${uri}/post`, PostRouter); // Pour creer un post
 app.use(`${uri}/favorite`, FavoriteRouter);
 app.use(`${uri}/rate`, RateRouter);
 app.use(`${uri}/comment`, CommentRouter);

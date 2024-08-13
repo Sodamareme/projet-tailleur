@@ -6,6 +6,13 @@ const FavoriteRouter = express.Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Favorite
+ *   description: API endpoints for managing user favorites
+ */
+
+/**
+ * @swagger
  * /favorite/add-delete-favorite:
  *   post:
  *     summary: Add or remove a post from the user's favorites.
@@ -19,39 +26,28 @@ const FavoriteRouter = express.Router();
  *           schema:
  *             type: object
  *             properties:
+ *               userId:
+ *                 type: string
+ *                 example: "1234567890abcdef"
+ *               itemId:
+ *                 type: string
+ *                 example: "abcdef1234567890"
+ *               action:
+ *                 type: string
+ *                 enum: [add, remove]
+ *                 example: "add"
+ *     responses:
+ *       200:
+ *         description: Successfully added or removed favorite the post from favorites
  *               postId:
  *                 type: string
  *                 description: The ID of the post to be added or removed from favorites.
  *                 example: "64d789f9e0324d45a87ab123"
- *     responses:
- *       200:
- *         description: Successfully added or removed the post from favorites.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Post added to favorites successfully"
- *                 status:
- *                   type: boolean
- *                   example: true
+ *  
+ *       401:
+ *         description: Unauthorized
  *       400:
- *         description: Failed to add or remove the post from favorites.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Failed to add to favorites"
- *                 error:
- *                   type: object
- *                 status:
- *                   type: boolean
- *                   example: false
+ *         description: Bad request, invalid input
  *       404:
  *         description: User or post not found.
  *         content:

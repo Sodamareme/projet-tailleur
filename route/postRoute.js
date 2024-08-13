@@ -8,7 +8,7 @@ const PostRouter = express.Router();
 /**
  * @swagger
  * tags:
- *   name: Posts
+ *   name: Post
  *   description: API pour gérer les publications
  */
 
@@ -17,7 +17,7 @@ const PostRouter = express.Router();
  * /post/create-post:
  *   post:
  *     summary: Créer une nouvelle publication
- *     tags: [Posts]
+ *     tags: [Post]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -51,7 +51,7 @@ PostRouter.post('/create-post', getToken, validatePost, createPost);
  * /post:
  *   get:
  *     summary: Obtenir toutes les publications
- *     tags: [Posts]
+ *     tags: [Post]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -67,7 +67,7 @@ PostRouter.get('/', getToken, getAllPosts);
  * /post/update-post/{id}:
  *   put:
  *     summary: Mettre à jour une publication
- *     tags: [Posts]
+ *     tags: [Post]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -107,7 +107,7 @@ PostRouter.put('/update-post/:id', getToken, validatePost, updatePost);
  * /post/delete-post/{id}:
  *   delete:
  *     summary: Supprimer une publication
- *     tags: [Posts]
+ *     tags: [Post]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -132,7 +132,7 @@ PostRouter.delete('/delete-post/:id', getToken, deletePost);
  * /post/share-post/{id}:
  *   post:
  *     summary: Partager une publication
- *     tags: [Posts]
+ *     tags: [Post]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -157,7 +157,7 @@ PostRouter.post('/share-post/:id', getToken, sharePost);
  * /post/disable-share/{id}:
  *   put:
  *     summary: Désactiver le partage d'une publication
- *     tags: [Posts]
+ *     tags: [Post]
  *     security:
  *       - bearerAuth: []
  *     parameters:

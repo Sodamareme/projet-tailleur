@@ -1,22 +1,24 @@
 import express from 'express';
 import { getToken } from '../middlewares/authMiddleware.js';
-import { createMesure, getAllMesures, updateMesure, deleteMesure } from '../controller/mesureController.js';
+import { createMessage, getMessages } from '../controller/messageController.js';
 
-const MesureRouter = express.Router();
+const MessagerRouter = express.Router();
 
 /**
  * @swagger
- * /create-mesure/{userId}:
+ * tags:
+ *   name: Message
+ *   description: API endpoints for sending and retrieving messages
+ */
+
+/**
+ * @swagger
+ * /messages/send-message:
  *   post:
- *     summary: Create a new mesure for a user
- *     tags: [Mesures]
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         description: ID of the user to create the mesure for
- *         schema:
- *           type: string
+ *     summary: Send a message
+ *     tags: [Message]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -24,24 +26,12 @@ const MesureRouter = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               gender:
+ *               receiverId:
  *                 type: string
- *               shoulder:
- *                 type: number
- *               chest:
- *                 type: number
- *               waist:
- *                 type: number
- *               hips:
- *                 type: number
- *               sleeveLength:
- *                 type: number
- *               neck:
- *                 type: number
- *               bust:
- *                 type: number
- *               inseam:
- *                 type: number
+ *                 example: "receiverUserId"
+ *               content:
+ *                 type: string
+ *                 example: "Hello, how are you?"
  *     responses:
  *       200:
  *         description: Mesure created successfully
@@ -50,128 +40,51 @@ const MesureRouter = express.Router();
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
- *                 mesure:
- *                   $ref: '#/components/schemas/Mesure'
- *                 status:
- *                   type: boolean
+ *       401:
+ *         description: Unauthorized
+ *       400:
+ *         description: Bad request
  */
-MesureRouter.post('/create-mesure/:userId', getToken, createMesure);
-
+MessageRouter.post('/send-message', getToken, createMessage);
 /**
  * @swagger
- * /get-mesure/{userId}:
+ * /messages/all-messages-of-user:
  *   get:
- *     summary: Get all mesures for a user
- *     tags: [Mesures]
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         description: ID of the user to retrieve mesures for
- *         schema:
- *           type: string
+ *     summary: Get all messages for the logged-in user
+ *     tags: [Message]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: All mesures retrieved successfully
+ *         description: List of all messages for the logged-in user
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 mesures:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Mesure'
- *                 status:
- *                   type: boolean
- *       500:
- *         description: Error retrieving mesures
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     example: "messageId"
+ *                   senderId:
+ *                     type: string
+ *                     example: "senderUserId"
+ *                   receiverId:
+ *                     type: string
+ *                     example: "receiverUserId"
+ *                   content:
+ *                     type: string
+ *                     example: "Hello, how are you?"
+ *                   timestamp:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2024-08-12T10:00:00Z"
+ *       401:
+ *         description: Unauthorized
  */
-MesureRouter.get('/get-mesure/:userId', getToken, getAllMesures);
+MessageRouter.get('/all-messages-of-user', getToken, getMessages);
 
-/**
- * @swagger
- * /update-mesure/{userId}:
- *   put:
- *     summary: Update a mesure for a user
- *     tags: [Mesures]
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         description: ID of the user to update the mesure for
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               shoulder:
- *                 type: number
- *               chest:
- *                 type: number
- *               waist:
- *                 type: number
- *               hips:
- *                 type: number
- *               sleeveLength:
- *                 type: number
- *               neck:
- *                 type: number
- *               bust:
- *                 type: number
- *               inseam:
- *                 type: number
- *     responses:
- *       200:
- *         description: Mesure updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 mesure:
- *                   $ref: '#/components/schemas/Mesure'
- *                 status:
- *                   type: boolean
- */
-MesureRouter.put('/update-mesure/:userId', getToken, updateMesure);
 
-/**
- * @swagger
- * /delete-mesure/{userId}:
- *   delete:
- *     summary: Delete a mesure for a user
- *     tags: [Mesures]
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         description: ID of the user to delete the mesure for
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Mesure deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 status:
- *                   type: boolean
- */
-MesureRouter.delete('/delete-mesure/:userId', getToken, deleteMesure);
 
-export default MesureRouter;
+export default MessagerRouter;

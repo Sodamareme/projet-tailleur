@@ -54,6 +54,7 @@ const LikeRouter = express.Router();
  *                 message:
  *                   type: string
  */
+LikeRouter.get('/like/:postId', getToken, likePost);
 
 /**
  * @swagger
@@ -80,33 +81,18 @@ const LikeRouter = express.Router();
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
- *                 disliked:
+ *                 success:
  *                   type: boolean
- *       400:
- *         description: Invalid request or missing post ID.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
+ *                   example: true
  *                 message:
  *                   type: string
- *                 error:
- *                   type: string
+ *                   example: "Post liked successfully"
  *       401:
- *         description: Unauthorized, user ID is required.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
+ *         description: Unauthorized
+ *       404:
+ *         description: Post not found
  */
 
-LikeRouter.get('/like/:postId', getToken, likePost);
 LikeRouter.get('/dislike/:postId', getToken, dislikePost);
 
 export default LikeRouter;
