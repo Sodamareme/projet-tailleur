@@ -2,7 +2,7 @@ import express from 'express';
 import { getToken } from '../middlewares/authMiddleware.js';
 import { createMessage, getMessages } from '../controller/messageController.js';
 
-const MessagerRouter = express.Router();
+const MessageRouter = express.Router();
 
 /**
  * @swagger
@@ -87,4 +87,4 @@ MessageRouter.get('/all-messages-of-user', getToken, getMessages);
 
 
 
-export default MessagerRouter;
+export default MessageRouter;
